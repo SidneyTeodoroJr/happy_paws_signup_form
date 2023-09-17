@@ -3,7 +3,7 @@
 
 <div align="center">
 <a href="https://happy-paws-signup-form.netlify.app/" target="_blank">
-<img src="happy_paws.png" alt="gradient">
+<img src="happy_paws.png" alt="Signup Form">
 </a>
 </div>
 </br>
