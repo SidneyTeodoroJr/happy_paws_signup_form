@@ -65,7 +65,7 @@ If you would like to contribute to the development of the Happy Paws application
 ## Autor
 </br>
 
-This Happy Paws application form was developed by [Sidney Teodoro Jr](https://github.com/SidneyTeodoroJr).
+This Happy Paws application form was developed by: [Sidney Teodoro Jr](https://github.com/SidneyTeodoroJr).
 
 ##
 </br>
