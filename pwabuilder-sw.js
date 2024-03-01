@@ -1,83 +1,63 @@
-// This is the service worker with the Cache-first network
+const CACHE_VERSION = "v1";
+const CACHE_NAME = `pwabuilder-precache-${CACHE_VERSION}`;
 
-const CACHE = "pwabuilder-precache";
-const precacheFiles = [
-  /* Add an array of files to precache for your app */
-];
-
-self.addEventListener("install", function (event) {
-  console.log("[PWA Builder] Install Event processing");
-
-  console.log("[PWA Builder] Skip waiting on install");
-  self.skipWaiting();
-
-  event.waitUntil(
-    caches.open(CACHE).then(function (cache) {
-      console.log("[PWA Builder] Caching pages during install");
-      return cache.addAll(precacheFiles);
-    })
-  );
+self.addEventListener("install", event => {
+    console.log("[PWA Builder] Install Event processing");
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(precacheFiles))
+            .then(() => console.log("[PWA Builder] Precaching complete"))
+            .catch(error => console.error("[PWA Builder] Precaching failed:", error))
+    );
+    self.skipWaiting();
 });
 
-// Allow sw to control of current page
-self.addEventListener("activate", function (event) {
-  console.log("[PWA Builder] Claiming clients for current page");
-  event.waitUntil(self.clients.claim());
+self.addEventListener("activate", event => {
+    console.log("[PWA Builder] Activate Event processing");
+    event.waitUntil(
+        caches.keys()
+            .then(cacheNames => {
+                return Promise.all(
+                    cacheNames.filter(name => name.startsWith("pwabuilder-precache-") && name !== CACHE_NAME)
+                        .map(name => caches.delete(name))
+                );
+            })
+            .then(() => console.log("[PWA Builder] Cache cleanup complete"))
+            .catch(error => console.error("[PWA Builder] Cache cleanup failed:", error))
+    );
+    event.waitUntil(self.clients.claim());
 });
 
-// If any fetch fails, it will look for the request in the cache and serve it from there first
-self.addEventListener("fetch", function (event) { 
-  if (event.request.method !== "GET") return;
+self.addEventListener("fetch", event => {
+    if (event.request.method !== "GET") return;
 
-  event.respondWith(
-    fromCache(event.request).then(
-      function (response) {
-        // The response was found in the cache so we responde with it and update the entry
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                if (response) {
+                    console.log("[PWA Builder] Resource found in cache:", event.request.url);
+                    return response;
+                }
 
-        // This is where we call the server to get the newest version of the
-        // file to use the next time we show view
-        event.waitUntil(
-          fetch(event.request).then(function (response) {
-            return updateCache(event.request, response);
-          })
-        );
+                console.log("[PWA Builder] Resource not found in cache. Fetching from network:", event.request.url);
+                return fetch(event.request)
+                    .then(networkResponse => {
+                        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
+                            return networkResponse;
+                        }
 
-        return response;
-      },
-      function () {
-        // The response was not found in the cache so we look for it on the server
-        return fetch(event.request)
-          .then(function (response) {
-            // If request was success, add or update it in the cache
-            event.waitUntil(updateCache(event.request, response.clone()));
+                        const clonedResponse = networkResponse.clone();
+                        caches.open(CACHE_NAME)
+                            .then(cache => cache.put(event.request, clonedResponse))
+                            .catch(error => console.error("[PWA Builder] Caching failed:", error));
 
-            return response;
-          })
-          .catch(function (error) {
-            console.log("[PWA Builder] Network request failed and no cache." + error);
-          });
-      }
-    )
-  );
+                        return networkResponse;
+                    })
+                    .catch(error => {
+                        console.error("[PWA Builder] Fetch failed. Serving offline fallback:", error);
+                        return caches.match("offline.html");
+                    });
+            })
+            .catch(error => console.error("[PWA Builder] Fetch failed:", error))
+    );
 });
-
-function fromCache(request) {
-  // Check to see if you have it in the cache
-  // Return response
-  // If not in the cache, then return
-  return caches.open(CACHE).then(function (cache) {
-    return cache.match(request).then(function (matching) {
-      if (!matching || matching.status === 404) {
-        return Promise.reject("no-match");
-      }
-
-      return matching;
-    });
-  });
-}
-
-function updateCache(request, response) {
-  return caches.open(CACHE).then(function (cache) {
-    return cache.put(request, response);
-  });
-}
