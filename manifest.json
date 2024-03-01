@@ -6,6 +6,7 @@
     "start_url": "/happy_paws_signup_form/",
     "name": "HappyPaws ",
     "short_name": "HappyPaws ",
+    "description" : "Application Form",
     "icons": [
         {
             "src": "img/icon-192x192.png",
