@@ -3,7 +3,7 @@
     "background_color": "#E59E06",
     "display": "minimal-ui",
     "scope": "",
-    "start_url": "/happy_paws_signup_form/",
+    "start_url": "/happy_paws_signup_form/index.html",
     "name": "HappyPaws ",
     "short_name": "HappyPaws ",
     "description" : "Application Form",
