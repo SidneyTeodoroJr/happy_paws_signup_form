@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="theme-color" content="#000000">
+    <link rel="canonical" href="https://happy-paws-signup-form.netlify.app/"> 
+    <meta name="apple-mobile-web-app-capable" content="yes"> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+    <meta name="apple-mobile-web-app-title" content="edson iOS"> 
+    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png"> 
+    <link rel="manifest" href="manifest.json" />  
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--Custom Fonts-->
@@ -11,11 +19,27 @@
     <link rel="stylesheet" href="./css/style.css">
     <title>Happy Paws</title>
 </head>
+
 <body class="area">
-   <!-- The `<ul class="circles">` and its child `<li>` elements are creating a visual effect of circles
-   on the webpage. Each `<li>` element represents a circle. The CSS styling for the `.circles` class
-   can be used to customize the appearance of these circles, such as their size, color, and
-   positioning. -->
+    <script>
+        if ("serviceWorker" in navigator) { 
+          if (navigator.serviceWorker.controller) { 
+            console.log("[PWA Builder] active service worker found, no need to register"); 
+          } else { 
+            // Register the service worker 
+            navigator.serviceWorker 
+              .register("pwabuilder-sw.js", { 
+                scope: "./" 
+              }) 
+              .then(function (reg) { 
+                console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope); 
+              }); 
+          } 
+        }    
+         
+    </script> 
+
+
     <ul class="circles">
         <li></li>
         <li></li>
