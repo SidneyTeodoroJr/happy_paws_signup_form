@@ -2,9 +2,9 @@
     "theme_color": "#c9c4c4",
     "background_color": "#E59E06",
     "display": "fullscreen",
-    "start_url": "/happy-paws-signup-form.netlify.app",
-    "short_name": "HappyPaws ",
-    "description" : "Application Form",
+    "start_url": "/",
+    "short_name": "HappyPaws",
+    "description": "Application Form",
     "icons": [
         {
             "src": "img/icon-192x192.png",
