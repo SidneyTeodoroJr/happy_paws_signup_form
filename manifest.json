@@ -1,7 +1,7 @@
 {
     "theme_color": "#c9c4c4",
     "background_color": "#E59E06",
-    "display": "standalone",
+    "display": "minimal-ui",
     "scope": "/happy_paws_signup_form/",
     "start_url": "/happy_paws_signup_form/",
     "name": "HappyPaws ",
